@@ -82,25 +82,48 @@ if(!isset ($_SESSION['nama'])){
                             </div>
                             
                             <div class="col-12">
-                             <?php
+
+
+<?php
 if (isset($_POST['simpan'])){
-	$id = $_POST ['id'];
-	$tgl = $_POST ['tgl'];
-	$nama = $_POST ['nama'];
-	$nik = $_POST ['nik'];
-	$laporan = $_POST ['laporan'];
-	$tlp = $_POST ['tlp'];
-	$gambar = $_POST ['gambar'];
-	$st = $_POST ['st'];
-	$tambah = mysqli_query ($conn, "INSERT INTO pengaduan(id_pengaduan,tgl_pengaduan,nama_pengadu,nik,isi_laporan,tlp,foto,status)VALUES('$id','$tgl','$nama','$nik','$laporan','$tlp','$gambar','$st')");
-	if($tambah){
-		echo "<div class='alert alert-success'><center>Pengaduan Berhasil</center></div>";
-		echo "<meta http-equiv='refresh' content='1;url=pengaduan1.php'>";
-		} else {
-		echo "<div class='alert alert-danger'><center>Pengaduan Gagal</center></div>";
-		echo "<meta http-equiv='refresh' content='1;url=pengaduan.php'>";
-		}
-		}
+    $tgl = $_POST['tgl'];
+    $nama = $_POST['nama'];
+    $nik = $_POST['nik'];
+    $laporan = $_POST['laporan'];
+    $tlp = $_POST['tlp'];
+    $st = $_POST['st'];
+    
+    // 1. Tangkap data file dari $_FILES
+    $nama_file = $_FILES['gambar']['name'];
+    $tmp_file  = $_FILES['gambar']['tmp_name'];
+    
+    // 2. Tentukan direktori tujuan (pastikan folder 'image/' sudah ada)
+    // Bisa ditambahkan fungsi untuk rename file (misal pakai timestamp) agar tidak bentrok jika nama file sama
+    $path = "image/" . $nama_file; 
+    
+    // 3. Pindahkan file fisik ke folder tujuan
+    if(move_uploaded_file($tmp_file, $path)){
+        
+        // 4. Jika file berhasil dipindah, jalankan query insert ke database
+        // Yang disimpan ke database cukup $nama_file nya saja
+        $query = "INSERT INTO pengaduan (tgl_pengaduan, nama_pengadu, nik, isi_laporan, tlp, foto, status) 
+                  VALUES ('$tgl', '$nama', '$nik', '$laporan', '$tlp', '$nama_file', '$st')";
+                  
+        $tambah = mysqli_query($conn, $query);
+        
+        if($tambah){
+            echo "<div class='alert alert-success'><center>Pengaduan Berhasil</center></div>";
+            echo "<meta http-equiv='refresh' content='1;url=pengaduan1.php'>";
+        } else {
+            echo "<div class='alert alert-danger'><center>Pengaduan Gagal Disimpan</center></div>";
+            echo "<meta http-equiv='refresh' content='1;url=pengaduan.php'>";
+        }
+        
+    } else {
+        // Pesan error jika gagal upload gambar
+        echo "<div class='alert alert-danger'><center>Gagal mengunggah foto pengaduan!</center></div>";
+    }
+}
 ?>
                                 <div class="mobile_menu d-block d-lg-none"></div>
                             </div>
@@ -145,7 +168,8 @@ if (isset($_POST['simpan'])){
     <div class="project_area">
     <h4 class="tulisan_input2">PENGADUAN</h4>
     <table class="table2" width="40%" align="center">
-<form method="post">
+<!-- <form method="post"> -->
+<form method="post" enctype="multipart/form-data">
 <input type="hidden" name="id" class="form_input2">
 <td><h7>TANGGAL PENGADUAN</h7></td><td><input type="text" name="tgl" class="form_input2" required value="<?php date_default_timezone_set('Asia/Jakarta'); echo date('Y-m-d (H:i:s)') ?>" readonly></td>
 </tr>

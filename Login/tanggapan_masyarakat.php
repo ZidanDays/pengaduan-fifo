@@ -126,11 +126,30 @@ if(!isset ($_SESSION['nama'])){
     <p class="tulisan_input2">TANGGAPAN LAPORAN MASYARAKAT</p>
 <form method="post">
 
-<center><h4 style="margin-top:20px">Ditanggapi Tanggal: <?= $data ['tgl_tanggapan']?></h4></center>
+<!-- <center><h4 style="margin-top:20px">Ditanggapi Tanggal: <?= $data ['tgl_tanggapan']?></h4></center>
 <div style="font-style:normal; font-family:Verdana, Geneva, sans-serif">
 <b><textarea rows="7px" style="width:100%;"><?= $data ['tanggapan']?></textarea></b>
 </div>
+<div> -->
+    <?php if (!empty($data)) : ?>
+
+    <center>
+        <h4 style="margin-top:20px">Ditanggapi Tanggal: <?= $data['tgl_tanggapan'] ?></h4>
+    </center>
+    <div style="font-style:normal; font-family:Verdana, Geneva, sans-serif">
+        <b><textarea rows="7px" style="width:100%;"><?= $data['tanggapan'] ?></textarea></b>
+    </div>
+
+<?php else : ?>
+
+    <center>
+        <h4 style="margin-top:20px; color: #dc3545;">Belum ada tanggapan</h4>
+    </center>
+    
+<?php endif; ?>
+
 <div>
+<center>
 <center><a class="btn btn-dark" href="pengaduan1.php" style="width:30%;">Kembali</a></p></center>
 </div>
 </form>

@@ -108,7 +108,8 @@ if (isset($_POST['simpan'])){
 	$isi = $_POST ['isi'];
 	$tgp = $_POST ['tgp'];
 	$adm = $_POST ['adm'];
-	$tambah = mysqli_query ($conn, "INSERT INTO tanggapan(id_tanggapan,id_pengaduan,tgl_tanggapan,isi_laporan,tanggapan,id_petugas)VALUES('$id','$idp','$tgl','$isi','$tgp','$adm')");
+	// $tambah = mysqli_query ($conn, "INSERT INTO tanggapan(id_tanggapan,id_pengaduan,tgl_tanggapan,isi_laporan,tanggapan,id_petugas)VALUES('$id','$idp','$tgl','$isi','$tgp','$adm')");
+	$tambah = mysqli_query ($conn, "INSERT INTO tanggapan(id_pengaduan,tgl_tanggapan,isi_laporan,tanggapan,id_petugas)VALUES('$idp','$tgl','$isi','$tgp','$adm')");
 	if($tambah){
 		echo "<div class='alert alert-success'><center>Berhasil Ditanggapi</center></div>";
 		echo "<meta http-equiv='refresh' content='1;url=data_pengaduan_petugas.php'>";

@@ -147,7 +147,8 @@ while ($data = mysqli_fetch_array ($query)){
 <td><?=$data ['nik'] ?></td>
 <td><?=$data ['isi_laporan'] ?></td>
 <td><?=$data ['tlp'] ?></td>
-<td><a href="#/image/<?= $data['foto'];?>"><img src="image/<?= $data['foto']?>" height="55px"></a></td>
+<td><a href="#Login/image/<?= $data['foto'];?>"><img src="Login/image/<?= $data['foto']?>" height="55px"></a></td>
+<!-- <td><a href="#/image/<?= $data['foto'];?>"><img src="image/<?= $data['foto']?>" height="55px"></a></td> -->
 <td><?=$data ['status'] ?></td>
 <td><a class="btn btn-success" style="float:left" href="tanggapan_masyarakat.php?id=<?php echo $data['isi_laporan'] ?>" role="button"><i class="fa fa-eye"></i> Lihat Tanggapan</a></p>
 <?php }}else{
