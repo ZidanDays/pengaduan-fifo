@@ -182,7 +182,8 @@ while ($data = mysqli_fetch_array ($query)){
 <td><?php echo $data['nama_pengadu'] ?></td>
 <td><?php echo $data['nik'] ?></td>
 <td><?php echo $data['isi_laporan'] ?></td>
-<td><a href="http://localhost/ukom_aipp/image/<?php echo $data['foto'];?>"><img src="image/<?php echo $data['foto'];?>" height="55px"></a></td>
+<!-- <td><a href="http://localhost/ukom_aipp/image/<?php echo $data['foto'];?>"><img src="Login/image/<?php echo $data['foto'];?>" height="55px"></a></td> -->
+<td><a href="Login/image/<?php echo $data['foto'];?>"><img src="Login/image/<?php echo $data['foto'];?>" height="55px"></a></td>
 <td><?php echo $data['status'] ?></td>
 <form method="post" action="edit_selesai.php?id=<?php echo $data['id_pengaduan'] ?>">
 <input type="hidden" name="id" class="form_input2" value="<?php echo $data['id_pengaduan']?>">
