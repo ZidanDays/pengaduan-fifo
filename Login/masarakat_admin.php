@@ -1,251 +1,114 @@
 <?php
 session_start();
 include 'koneksi.php';
-if(!isset ($_SESSION['nama'])){
-	header ("location: index.php");
-	}else{
+
+// Cek apakah user sudah login, jika belum kembalikan ke index
+if(!isset($_SESSION['nama'])){
+    header("location: index.php");
+    exit(); // Tambahkan exit agar eksekusi script langsung berhenti
+}
 ?>
-<!doctype html>
-<html class="no-js" lang="zxx">
+<!DOCTYPE html>
+<html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Masyarakat</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Dashboard Masyarakat - Pengaduan DLH Minahasa</title>
 
-    <!-- <link rel="manifest" href="site.webmanifest"> -->
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
-    <!-- Place favicon.ico in the root directory -->
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    <!-- CSS here -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../css/magnific-popup.css">
-    <link rel="stylesheet" href="../css/font-awesome.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <link href="../assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Jarak antar tombol di hero section */
+    .hero-buttons .btn-get-started {
+        margin: 5px;
+    }
+  </style>
 </head>
 
-<body>
-    <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
+<body class="index-page">
 
-    <!-- header-start -->
-    <header>
-        <div class="header-area ">
-            <div class="header-top_area d-none d-lg-block">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-6 col-md-6 ">
-                          
-                        </div>
-                        <div class="col-xl-6 col-md-6">
-                            <div class="short_contact_list">
-                                <ul>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="sticky-header" class="main-header-area">
-                <div class="container">
-                    <div class="header_bottom_border">
-                        <div class="row align-items-center">
-                            <div class="col-xl-3 col-lg-2">
-                                <div class="logo">
-                                    <a href="masarakat_admin.php">
-                                        <img src="img/logominahasa1.jpg" alt="">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-7">
-                                <div class="main-menu  d-none d-lg-block">
-                                    <nav>
-                                        <ul>
-                                        <i class="fa fa-home" style="color:white"><li><a class="active" href="masarakat_admin.php">Home</a></li></i>
-                                        <i class="fa fa-bar-chart" style="color:white"><li><a class="active" href="pengaduan1.php">Pengaduan Saya</a></li></i>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                                <div class="Appointment">
-                                    <div class="search_button">
-                                       
-                                    </div>
-                                    <div class="book_btn d-none d-lg-block">
-                                        <a href="logout.php" onclick="return confirm('Yakin Ingin Logout?')">Logout <i class="fa fa-sign-out"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
-                </div>
-            </div>
-        </div>
-    </header>
-    <!-- header-end -->
+      <a href="masarakat_admin.php" class="logo d-flex align-items-center me-auto me-xl-0">
+        <h1 class="sitename">DLH Minahasa</h1>
+      </a>
 
-    <!-- slider_area_start -->
-      <div class="slider_area">
-        <div class="slider_active owl-carousel">
-            <div class="single_slider  d-flex align-items-center slider_bg_2 overlay2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="slider_text ">
-                                <h3> Website<br>
-                                    Pengaduan Masyarakat</h3>
-                                <p>Selamat datang di website Pengaduan Masyarakat Desa<br>
-                                    Silahkan adukan Keluh Kesah anda</p>
-                                <div class="video_service_btn">
-                                    <a href="#" class="boxed-btn3" style="text-transform: uppercase; font-size:15px"><i class="fa fa-user"> <?php echo $_SESSION['nama']?></i></a>
-                                    <a href="pengaduan.php" class="boxed-btn3">Pengaduan disini</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="single_slider  d-flex align-items-center slider_bg_1 overlay2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="slider_text ">
-                               <h3> Website<br>
-                                    Pengaduan Masyarakat</h3>
-                                <p>Selamat datang di website Pengaduan Masyarakat Desa<br>
-                                    Silahkan adukan Keluh Kesah anda</p>
-                                <div class="video_service_btn">
-                                    <a href="#" class="boxed-btn3" style="text-transform: uppercase; font-size:15px"><i class="fa fa-user"> <?php echo $_SESSION['nama']?></i></a>
-                                    <a href="pengaduan.php" class="boxed-btn3">Pengaduan disini</a>
-                                </div>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="masarakat_admin.php" class="active">Home</a></li>
+          <li><a href="pengaduan1.php">Pengaduan Saya</a></li>
+          <li><a href="logout.php" onclick="return confirm('Yakin Ingin Logout?')" class="text-danger">Logout <i class="bi bi-box-arrow-right"></i></a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="single_slider  d-flex align-items-center slider_bg_3 overlay2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="slider_text ">
-                              <h3> Website<br>
-                                    Pengaduan Masyarakat</h3>
-                                <p>Selamat datang di website Pengaduan Masyarakat Desa<br>
-                                    Silahkan adukan Keluh Kesah anda</p>
-                                <div class="video_service_btn">
-                                    <a href="#" class="boxed-btn3" style="text-transform: uppercase; font-size:15px"><i class="fa fa-user"> <?php echo $_SESSION['nama']?></i></a>
-                                    <a href="pengaduan.php" class="boxed-btn3">Pengaduan disini</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="header-social-links">
+        <span class="fw-bold" style="color: #059669;"><i class="bi bi-person-circle"></i> <?= $_SESSION['nama'] ?></span>
+      </div>
+
     </div>
-    
-    <!-- slider_area_end -->
+  </header>
 
-    <!-- service_area_start -->
+  <main class="main">
 
+    <section id="hero" class="hero section">
 
-    <!-- project  -->
-    <!--/ project  -->
+      <img src="../assets/img/hero-bg.jpg" alt="" data-aos="fade-in">
 
-    <!-- footer start -->
-    <footer class="footer">
+      <div class="container text-center" data-aos="zoom-out" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2>Selamat Datang, <?= $_SESSION['nama'] ?>!</h2>
+            <p>Di Sistem Pengaduan Masyarakat Dinas Lingkungan Hidup Minahasa. Silahkan sampaikan aspirasi dan keluh kesah Anda terkait lingkungan di wilayah Anda.</p>
             
-        </div>
-        <div class="copy-right_text">
-            <div class="container">
-                <div class="footer_border"></div>
-                <div class="row">
-                    <div class="col-xl-12">
-                        <p class="copy_right text-center">
-                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#" target="_blank">DESA</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        </p>
-                    </div>
-                </div>
+            <div class="hero-buttons mt-4">
+                <a href="pengaduan.php" class="btn-get-started"><i class="bi bi-pencil-square"></i> Buat Pengaduan</a>
+                <a href="pengaduan1.php" class="btn-get-started" style="background-color: #0dcaf0; color:white;"><i class="bi bi-card-list"></i> Riwayat Pengaduan</a>
             </div>
+          </div>
         </div>
-    </footer>
-    <!--/ footer end  -->
+      </div>
 
-    <!-- link that opens popup -->
+    </section></main>
 
-    <!-- form itself end-->
-    <form id="test-form" method="post" class="white-popup-block mfp-hide">
-        <div class="popup_box ">
-            <div class="popup_inner">
-                <div class="popup_header">
-                    <h3>Silahkan Login</h3>
-                </div>
-                <div class="custom_form">
-                        <div class="row">
-                                <div class="col-xl-12">
-                                    <input type="text" placeholder="Username">
-                                </div>
-                                <div class="col-xl-12">
-                                    <input type="email" placeholder="Password">
-                                </div>
-                               
-                                <div class="col-xl-12">
-                                    <button type="submit" class="boxed-btn3">Login</button>
-                                </div>
-                                <div class="col-xl-12">
-                                </div>
-                            </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    
-     
+  <footer id="footer" class="footer light-background">
+    <div class="container">
+      <div class="copyright text-center ">
+        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | <i class="bi bi-heart-fill" style="color: green;" aria-hidden="true"></i> by <strong>DESA</strong></p>
+      </div>
+    </div>
+  </footer>
 
-   
-    <!-- form itself end -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- JS here -->
-    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
-    <script src="js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/isotope.pkgd.min.js"></script>
-    <script src="js/ajax-form.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
-    <script src="js/imagesloaded.pkgd.min.js"></script>
-    <script src="js/scrollIt.js"></script>
-    <script src="js/jquery.scrollUp.min.js"></script>
-    <script src="js/wow.min.js"></script>
-    <script src="js/nice-select.min.js"></script>
-    <script src="js/jquery.slicknav.min.js"></script>
-    <script src="js/jquery.magnific-popup.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/gijgo.min.js"></script>
-    <script src="js/slick.min.js"></script>
-    <!--contact js-->
-    <script src="js/contact.js"></script>
-    <script src="js/jquery.ajaxchimp.min.js"></script>
-    <script src="js/jquery.form.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
-    <script src="js/mail-script.js"></script>
+  <div id="preloader"></div>
 
-    <script src="js/main.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/php-email-form/validate.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+
+  <script src="../assets/js/main.js"></script>
+
 </body>
 </html>
-<?php } ?>
