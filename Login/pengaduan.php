@@ -86,42 +86,28 @@ if(!isset ($_SESSION['nama'])){
 
 <?php
 if (isset($_POST['simpan'])){
-    $tgl = $_POST['tgl'];
-    $nama = $_POST['nama'];
-    $nik = $_POST['nik'];
-    $laporan = $_POST['laporan'];
-    $tlp = $_POST['tlp'];
-    $st = $_POST['st'];
+    // Variabel $id dihapus karena menggunakan Auto Increment di database
+    $tgl = $_POST ['tgl'];
+    $nama = $_POST ['nama'];
+    $nik = $_POST ['nik'];
+    $laporan = $_POST ['laporan'];
+    $tlp = $_POST ['tlp'];
+    $gambar = $_POST ['gambar']; 
+    $st = $_POST ['st'];
     
-    // 1. Tangkap data file dari $_FILES
-    $nama_file = $_FILES['gambar']['name'];
-    $tmp_file  = $_FILES['gambar']['tmp_name'];
+    // Perbaikan: id_pengaduan dihapus dari query INSERT
+    $query_insert = "INSERT INTO pengaduan (tgl_pengaduan, nama_pengadu, nik, isi_laporan, tlp, foto, status) 
+                     VALUES ('$tgl', '$nama', '$nik', '$laporan', '$tlp', '$gambar', '$st')";
+                     
+    $tambah = mysqli_query ($conn, $query_insert);
     
-    // 2. Tentukan direktori tujuan (pastikan folder 'image/' sudah ada)
-    // Bisa ditambahkan fungsi untuk rename file (misal pakai timestamp) agar tidak bentrok jika nama file sama
-    $path = "image/" . $nama_file; 
-    
-    // 3. Pindahkan file fisik ke folder tujuan
-    if(move_uploaded_file($tmp_file, $path)){
-        
-        // 4. Jika file berhasil dipindah, jalankan query insert ke database
-        // Yang disimpan ke database cukup $nama_file nya saja
-        $query = "INSERT INTO pengaduan (tgl_pengaduan, nama_pengadu, nik, isi_laporan, tlp, foto, status) 
-                  VALUES ('$tgl', '$nama', '$nik', '$laporan', '$tlp', '$nama_file', '$st')";
-                  
-        $tambah = mysqli_query($conn, $query);
-        
-        if($tambah){
-            echo "<div class='alert alert-success'><center>Pengaduan Berhasil</center></div>";
-            echo "<meta http-equiv='refresh' content='1;url=pengaduan1.php'>";
-        } else {
-            echo "<div class='alert alert-danger'><center>Pengaduan Gagal Disimpan</center></div>";
-            echo "<meta http-equiv='refresh' content='1;url=pengaduan.php'>";
-        }
-        
+    if($tambah){
+        echo "<div class='alert alert-success'><center>Pengaduan Berhasil</center></div>";
+        echo "<meta http-equiv='refresh' content='1;url=pengaduan1.php'>";
     } else {
-        // Pesan error jika gagal upload gambar
-        echo "<div class='alert alert-danger'><center>Gagal mengunggah foto pengaduan!</center></div>";
+        // Menambahkan mysqli_error agar jika ada error lain, pesan kesalahannya terlihat
+        echo "<div class='alert alert-danger'><center>Pengaduan Gagal: " . mysqli_error($conn) . "</center></div>";
+        echo "<meta http-equiv='refresh' content='3;url=pengaduan.php'>";
     }
 }
 ?>
