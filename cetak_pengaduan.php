@@ -24,8 +24,10 @@ if(!isset ($_SESSION['level'])){
 <div class="head">
 <table>
 <tr>
-<td width="10%"><img src="img/logo bondoowso.png" width="80px" /></td>
-<td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;">PEMERINTAH KABUPATEN BONDOWOSO<br />KECAMATAN SUKOSARI<br/>DESA SUKOSARI LOR</font><br /><i><font style="font-size:15px;">Jalan Y. Reksosiswono 655 Kecamatan Sukosari Kabupaten Bondowoso</font></i></td>
+<!-- <td width="10%"><img src="img/logo bondoowso.png" width="80px" /></td> -->
+<td width="10%"><img src="img/logo dlh.png" width="80px" /></td>
+<!-- <td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;">DINAS LINGKUNGAN HIDUP<br />KABUPATEN MINAHASA <br/>DESA SUKOSARI</font><br /><i><font style="font-size:15px;">Jl. Tumou Tou no. 11A, Jl. Sasaran, Sasaran, Kec. Tondano Utara, Kabupaten Minahasa, Sulawesi Utara, Indonesia</font></i></td> -->
+<td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;">DINAS LINGKUNGAN HIDUP<br />KABUPATEN MINAHASA</font><br /><i><font style="font-size:15px;">Jl. Tumou Tou no. 11A, Jl. Sasaran, Sasaran, Kec. Tondano Utara, Kabupaten Minahasa, Sulawesi Utara, Indonesia</font></i></td>
 </tr>
 </table>
 </div><br /><br />
@@ -52,7 +54,7 @@ while ($data = mysqli_fetch_array ($query)) {
 <td><?php echo $data['nama_pengadu'] ?></td>
 <td><?php echo $data['nik'] ?></td>
 <td><?php echo $data['isi_laporan'] ?></td>
-<td><a href="#/<?php echo $data['foto'];?>"><img src="image/<?php echo $data['foto'];?>" height="55px"></a></td>
+<td><a href="#/<?php echo $data['foto'];?>"><img src="Login/image/<?php echo $data['foto'];?>" height="55px"></a></td>
 </tr>
 <?php }}else{
 	echo '<tr><td colspan="6" align="center">TIDAK ADA DATA</td></tr>';
@@ -61,10 +63,10 @@ while ($data = mysqli_fetch_array ($query)) {
 <br/>
 <table class="titik">
 <tr>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sukosari Lor,.........................<script>document.write(new Date().getFullYear());</script></td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tondano,.........................<script>document.write(new Date().getFullYear());</script></td>
 </tr>
 <tr>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KEPALA DESA SUKOSARI LOR</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketua</td>
 </tr>
 </table>
 <br/><br/><br/><br/>
