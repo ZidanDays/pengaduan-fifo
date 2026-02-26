@@ -90,16 +90,13 @@ if(!isset($_SESSION['nama'])){
             
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
+<thead class="table-light">
                         <tr>
                             <th>No</th>
-                            <th>Tgl Pengaduan</th>
-                            <th>Nama</th>
-                            <th>NIK</th>
-                            <th>Isi Laporan</th>
-                            <th>No Telepon</th>
-                            <th>Foto Bukti</th>
-                            <th>Status</th>
+                            <th>Tanggal</th>
+                            <th>Laporan & Prioritas</th>
+                            <th>Foto</th>
+                            <th>Status & Antrean</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -107,36 +104,57 @@ if(!isset($_SESSION['nama'])){
                         <?php
                         $no = 1;      
                         $nik = $_SESSION['nik'];
-                        $query = mysqli_query($conn,"SELECT * FROM pengaduan WHERE nik = '$nik'");
+                        $query = mysqli_query($conn,"SELECT * FROM pengaduan WHERE nik = '$nik' ORDER BY id_pengaduan DESC");
                         
                         if (mysqli_num_rows($query) > 0){
                             while ($data = mysqli_fetch_array($query)){
+                                
+                                // KALKULASI POSISI ANTREAN JIKA MASIH 'PROSES'
+                                $teks_antrean = "";
+                                if($data['status'] == 'Proses') {
+                                    $id_ini = $data['id_pengaduan'];
+                                    $prio_ini = $data['prioritas'];
+                                    
+                                    // Hitung laporan dengan prioritas lebih tinggi ATAU (prioritas sama tapi ID lebih kecil/masuk duluan)
+                                    $cek_antrean = mysqli_query($conn, "
+                                        SELECT COUNT(*) AS posisi FROM pengaduan 
+                                        WHERE status = 'Proses' 
+                                        AND (
+                                            FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah') < FIELD('$prio_ini', 'Tinggi', 'Sedang', 'Rendah')
+                                            OR (prioritas = '$prio_ini' AND id_pengaduan <= $id_ini)
+                                        )
+                                    ");
+                                    $data_antrean = mysqli_fetch_assoc($cek_antrean);
+                                    $urutan = $data_antrean['posisi'];
+                                    $teks_antrean = "<div class='mt-2 badge bg-primary bg-opacity-10 text-primary border border-primary'><i class='bi bi-hourglass-split'></i> Antrean ke-$urutan</div>";
+                                }
                         ?>
                         <tr>
                             <td><?= $no++ ?></td>
-                            <td><?= $data['tgl_pengaduan'] ?></td>
-                            <td><?= $data['nama_pengadu'] ?></td>
-                            <td><?= $data['nik'] ?></td>
-                            <td class="text-start" style="max-width: 250px;"><?= $data['isi_laporan'] ?></td>
-                            <td><?= $data['tlp'] ?></td>
+                            <td><?= date('d-m-Y', strtotime(str_replace(['(', ')'], '', $data['tgl_pengaduan']))) ?></td>
+                            <td class="text-start" style="max-width: 250px;">
+                                <?php if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Tinggi</span><br>"; ?>
+                                <?= $data['isi_laporan'] ?>
+                            </td>
                             <td>
-                                <a href="image/<?= $data['foto']; ?>" target="_blank" title="Klik untuk memperbesar">
-                                    <img src="image/<?= $data['foto'] ?>" height="55px" alt="Bukti Foto">
+                                <a href="image/<?= $data['foto']; ?>" target="_blank">
+                                    <img src="image/<?= $data['foto'] ?>" height="55px" alt="Bukti">
                                 </a>
                             </td>
                             <td>
-                                <span class="fw-bold text-secondary"><?= $data['status'] ?></span>
+                                <span class="badge <?= ($data['status'] == 'Selesai') ? 'bg-success' : 'bg-warning text-dark' ?> fs-6"><?= $data['status'] ?></span>
+                                <?= $teks_antrean ?>
                             </td>
                             <td>
-                                <a class="btn btn-sm btn-success" href="tanggapan_masyarakat.php?id=<?= $data['isi_laporan'] ?>">
-                                    <i class="bi bi-eye"></i> Lihat Tanggapan
+                                <a class="btn btn-sm btn-outline-success" href="tanggapan_masyarakat.php?id=<?= $data['id_pengaduan'] ?>">
+                                    <i class="bi bi-eye"></i> Tanggapan
                                 </a>
                             </td>
                         </tr>
                         <?php 
                             } 
                         } else {
-                            echo '<tr><td colspan="9" class="text-center text-muted py-4"><strong>TIDAK ADA DATA PENGADUAN!</strong><br>Anda belum pernah membuat laporan.</td></tr>';
+                            echo '<tr><td colspan="6" class="text-center text-muted py-4">Belum ada laporan yang diajukan.</td></tr>';
                         } 
                         ?>
                     </tbody>

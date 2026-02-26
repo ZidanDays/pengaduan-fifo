@@ -27,7 +27,7 @@ if(!isset ($_SESSION['level'])){
 <!-- <td width="10%"><img src="img/logo bondoowso.png" width="80px" /></td> -->
 <td width="10%"><img src="img/logo dlh.png" width="80px" /></td>
 <!-- <td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;">DINAS LINGKUNGAN HIDUP<br />KABUPATEN MINAHASA <br/>DESA SUKOSARI</font><br /><i><font style="font-size:15px;">Jl. Tumou Tou no. 11A, Jl. Sasaran, Sasaran, Kec. Tondano Utara, Kabupaten Minahasa, Sulawesi Utara, Indonesia</font></i></td> -->
-<td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;">DINAS LINGKUNGAN HIDUP<br />KABUPATEN MINAHASA</font><br /><i><font style="font-size:15px;">Jl. Tumou Tou no. 11A, Jl. Sasaran, Sasaran, Kec. Tondano Utara, Kabupaten Minahasa, Sulawesi Utara, Indonesia</font></i></td>
+<td align="center" width="90%"><font style="font-size:22px; font-family:Arial, Helvetica, sans-serif;"><strong>DINAS LINGKUNGAN HIDUP<br />KABUPATEN MINAHASA</font></strong><br /><i><font style="font-size:15px;">Jl. Tumou Tou no. 11A, Jl. Sasaran, Sasaran, Kec. Tondano Utara, Kabupaten Minahasa, Sulawesi Utara, Indonesia</font></i></td>
 </tr>
 </table>
 </div><br /><br />
