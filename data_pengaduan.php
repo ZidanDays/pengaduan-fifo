@@ -106,19 +106,19 @@ if(!isset($_SESSION['nama_petugas'])){
 
         <div class="table-responsive shadow-sm bg-white rounded">
           <table class="table table-bordered table-hover align-middle mb-0">
-            <thead class="table-light">
+<thead class="table-light">
               <tr>
                 <th width="5%">No</th>
-                <th width="10%">Tgl</th>
-                <th width="15%">Nama</th>
-                <th width="10%">NIK</th>
-                <th width="25%">Isi Laporan</th>
+                <th width="10%">Tanggal</th>
+                <th width="15%">Pelapor</th>
+                <th width="25%">Isi & Prioritas</th>
                 <th width="10%">Foto</th>
-                <th width="10%">Status</th>
-                <th width="15%" class="text-center">Aksi</th>
+                <th width="5%">Status</th>
+                <th width="10%" class="text-center">Aksi</th>
+                <th width="10%" class="text-center">Validasi</th>
               </tr>
             </thead>
-            <tbody>
+<tbody>
               <?php
               $batas = 10;
               $halaman = @$_GET['halaman'];
@@ -128,72 +128,93 @@ if(!isset($_SESSION['nama_petugas'])){
               } else {
                   $posisi = ($halaman-1) * $batas;
               }
+
               $no = 1 + $posisi;
-              
               $cari = isset($_POST['cr']) ? $_POST['cr'] : '';
-              
+
               if ($cari != ''){
-                  $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE nama_pengadu LIKE '%".$cari."%' OR nik LIKE '%".$cari."%' OR tgl_pengaduan LIKE '%".$cari."%' OR status LIKE '%".$cari."%'");
+                  // Jika ada pencarian, tampilkan semua tanpa filter 'Proses' (Mencari arsip)
+                  $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE nama_pengadu LIKE '%".$cari."%' OR nik LIKE '%".$cari."%' OR tgl_pengaduan LIKE '%".$cari."%' OR status LIKE '%".$cari."%' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC"); 
               } else {
-                  $query = mysqli_query($conn, "SELECT * FROM pengaduan LIMIT $posisi, $batas");
+                  // FILTER ACTIVE QUEUE & HYBRID FIFO
+                  // Tampilkan HANYA status 'Proses', diurutkan berdasarkan Prioritas, baru FIFO (ID)
+                  $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE status = 'Proses' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC LIMIT $posisi, $batas");
               }
 
               if (mysqli_num_rows($query) > 0){
-                while ($data = mysqli_fetch_array($query)){
+                  while ($data = mysqli_fetch_array($query)){
+                      
+                      // // LOGIKA SLA (Service Level Agreement) - Warna Merah Jika Terlambat 2 Hari
+                      // $tgl_masuk = strtotime($data['tgl_pengaduan']);
+                      // $sekarang = time();
+                      // $selisih_hari = floor(($sekarang - $tgl_masuk) / (60 * 60 * 24));
+                      
+                      // $peringatan_class = ($selisih_hari >= 2 && $data['status'] == 'Proses') ? 'table-danger' : '';
+
+                      // LOGIKA SLA (MEMPERBAIKI ERROR 1970)
+                      // Karena varchar berisi tanda kurung "2023-12-01 (14:30:00)", kita hapus tanda kurungnya agar bisa dibaca fungsi strtotime
+                      $tgl_string_bersih = str_replace(['(', ')'], '', $data['tgl_pengaduan']);
+                      $tgl_masuk = strtotime($tgl_string_bersih); 
+                      
+                      $sekarang = time();
+                      $selisih_hari = floor(($sekarang - $tgl_masuk) / (60 * 60 * 24));
+                      
+                      $peringatan_class = ($selisih_hari >= 2 && $data['status'] == 'Proses') ? 'table-danger' : '';
               ?>
-              <tr>
+              <tr class="<?= $peringatan_class ?>">
                 <td><?php echo $no++; ?></td>
-                <td><?php echo date('d-m-Y', strtotime($data['tgl_pengaduan'])); ?></td>
-                <td><?php echo $data['nama_pengadu']; ?></td>
-                <td><?php echo $data['nik']; ?></td>
-                <td><?php echo $data['isi_laporan']; ?></td>
+                <td>
+                    <?php echo date('d-m-Y', $tgl_masuk); ?>
+                    <?php if($selisih_hari >= 2 && $data['status'] == 'Proses') { echo "<br><span class='badge bg-danger mt-1'><i class='bi bi-exclamation-triangle'></i> Terlambat!</span>"; } ?>
+                </td>
+                <td>
+                    <strong><?php echo $data['nama_pengadu']; ?></strong><br>
+                    <small class="text-muted">NIK: <?php echo $data['nik']; ?></small>
+                </td>
+                <td>
+                    <?php 
+                        if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Prioritas Tinggi</span><br>";
+                        elseif($data['prioritas'] == 'Sedang') echo "<span class='badge bg-warning text-dark mb-1'>Prioritas Sedang</span><br>";
+                        else echo "<span class='badge bg-secondary mb-1'>Prioritas Rendah</span><br>";
+                    ?>
+                    <?php echo $data['isi_laporan']; ?>
+                </td>
                 <td>
                   <a href="Login/image/<?php echo $data['foto']; ?>" target="_blank" class="glightbox">
                     <img src="Login/image/<?php echo $data['foto']; ?>" height="55" class="rounded border" alt="Foto">
                   </a>
                 </td>
                 <td>
-                  <?php 
-                    if($data['status'] == 'Selesai') {
-                      echo '<span class="badge bg-success">Selesai</span>';
-                    } elseif($data['status'] == 'Proses') {
-                      echo '<span class="badge bg-warning text-dark">Proses</span>';
-                    } else {
-                      echo '<span class="badge bg-secondary">'.$data['status'].'</span>';
-                    }
-                  ?>
+                    <span class="badge <?= ($data['status'] == 'Selesai') ? 'bg-success' : 'bg-warning text-dark' ?>"><?php echo $data['status']; ?></span>
                 </td>
                 <td class="text-center">
-                  <form method="post" action="edit_selesai.php?id=<?php echo $data['id_pengaduan']; ?>" class="d-inline">
+                  <form method="post" action="edit_selesai_ptgs.php?id=<?php echo $data['id_pengaduan']; ?>" class="mb-1">
                     <input type="hidden" name="id" value="<?php echo $data['id_pengaduan']; ?>">
-                    <input type="hidden" name="tgl" value="<?php echo $data['tgl_pengaduan']; ?>">
-                    <input type="hidden" name="nama" value="<?php echo $data['nama_pengadu']; ?>">
-                    <input type="hidden" name="nik" value="<?php echo $data['nik']; ?>">
-                    <input type="hidden" name="isi" value="<?php echo $data['isi_laporan']; ?>">
-                    <input type="hidden" name="tlp" value="<?php echo isset($data['tlp']) ? $data['tlp'] : ''; ?>">
-                    <input type="hidden" name="foto" value="<?php echo $data['foto']; ?>">
                     <input type="hidden" name="status" value="Selesai">
-                    
-                    <button type="submit" class="btn btn-sm btn-success mb-1" name="simpan" title="Tandai Selesai"><i class="bi bi-check-circle"></i></button>
+                    <button type="submit" class="btn btn-sm btn-success mb-1 w-100" name="simpan"><i class="bi bi-check-circle"></i> Selesai</button>
+                    <a onClick="return confirm('Yakin Ingin Menghapus?')" class="btn btn-sm btn-danger w-100" href="hapus_data_ptgs.php?idd=<?php echo $data['id_pengaduan']; ?>"><i class="bi bi-trash"></i> Hapus</a>
                   </form>
-                  
-                  <a onClick="return confirm('Yakin Ingin Menghapus?')" class="btn btn-sm btn-danger mb-1" href="hapus_data.php?idd=<?php echo $data['id_pengaduan']; ?>" title="Hapus"><i class="bi bi-trash"></i></a>
-                  
-                  <div class="btn-group mb-1">
-                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-gear"></i>
+                </td>
+                <td class="text-center">
+                  <div class="dropdown mb-2">
+                    <button class="btn btn-sm btn-dark w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-gear"></i> Set
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                      <li><a class="dropdown-item" href="tanggapan_adm.php?id=<?php echo $data['id_pengaduan']; ?>"><i class="bi bi-chat-dots me-2 text-primary"></i>Tanggapi</a></li>
-                      <li><a class="dropdown-item" href="tanggapan_adm_cek.php?id=<?php echo $data['isi_laporan']; ?>"><i class="bi bi-eye me-2 text-info"></i>Lihat Tanggapan</a></li>
+                      <li><a class="dropdown-item" href="tanggapan_ptgs.php?id=<?php echo $data['id_pengaduan']; ?>"><i class="bi bi-chat-dots me-2 text-primary"></i>Tanggapi</a></li>
+                      <li><a class="dropdown-item" href="tanggapan_ptgs_cek.php?id=<?php echo $data['isi_laporan']; ?>"><i class="bi bi-eye me-2 text-info"></i>Lihat Tanggapan</a></li>
                     </ul>
                   </div>
+                  <form method="post" action="data_masarakat_cek_ptgs.php">
+                    <input type="hidden" name="cr" value="<?php echo $data['nik']; ?>" />
+                    <button type="submit" class="btn btn-sm btn-outline-success w-100" name="cari"><i class="bi bi-person-check"></i> Cek NIK</button>
+                  </form>
                 </td>
               </tr>
               <?php 
-                } 
+                  } 
               } else {
-                  echo '<tr><td colspan="8" class="text-center text-muted py-4">TIDAK ADA DATA PENGADUAN</td></tr>';
+                  echo '<tr><td colspan="8" class="text-center text-muted py-4">HORE! Antrean Bersih. Tidak ada laporan aktif saat ini.</td></tr>';
               }
               ?>
             </tbody>

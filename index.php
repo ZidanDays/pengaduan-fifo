@@ -149,6 +149,7 @@ if (isset($_POST['login'])) {
       </div>
     </div>
   </footer>
+  <br>
 
   <div class="modal fade" id="loginAdminModal" tabindex="-1" aria-labelledby="loginAdminModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

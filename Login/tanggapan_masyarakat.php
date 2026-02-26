@@ -9,7 +9,8 @@ if(!isset($_SESSION['nama'])){
 }
 
 $idd = $_GET['id'];
-$p = mysqli_query($conn, "SELECT * FROM tanggapan WHERE isi_laporan = '$idd'");
+// $p = mysqli_query($conn, "SELECT * FROM tanggapan WHERE isi_laporan = '$idd'");
+$p = mysqli_query($conn, "SELECT * FROM tanggapan WHERE id_pengaduan = '$idd'");
 $data = mysqli_fetch_array($p);
 ?>
 <!DOCTYPE html>
