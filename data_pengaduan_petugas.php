@@ -86,6 +86,16 @@ if(!isset($_SESSION['nama_petugas'])){
 
         <div class="alert alert-light border shadow-sm mb-4 d-flex justify-content-between align-items-center" role="alert">
           <div>
+            <i class="bi bi-archive-fill fs-4 me-2 align-middle text-success"></i> 
+            <span class="text-uppercase fw-bold">Arsip Data</span>
+          </div>
+          <div>
+            <a href="data_pengaduan_petugas.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-list-task me-1"></i> Lihat ..</a>
+          </div>
+        </div>
+
+        <div class="alert alert-light border shadow-sm mb-4 d-flex justify-content-between align-items-center" role="alert">
+          <div>
             <i class="bi bi-person-circle fs-4 me-2 align-middle text-primary"></i> 
             <span class="text-uppercase fw-bold"><?php echo $_SESSION['nama_petugas']; ?></span>
             <span class="badge bg-primary ms-2 text-uppercase"><?php echo $_SESSION['level']; ?></span>
