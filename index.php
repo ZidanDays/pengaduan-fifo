@@ -179,7 +179,7 @@ if (isset($_POST['login'])) {
   </div>
 
   <div class="floatwa">
-      <a href="https://api.whatsapp.com/send?phone=62895357219911&amp;text=Halo%20ADMIN,%20Saya%20mau%20Lapor,%20saya%20lupa%20akun" target="_blank">
+      <a href="https://api.whatsapp.com/send?phone=6282152715299&amp;text=Halo%20ADMIN,%20Saya%20mau%20Lapor,%20saya%20lupa%20akun" target="_blank">
           <div class="tombolwa"><i class="bi bi-whatsapp"></i> LUPA PASSWORD? SILAHKAN LAPOR DISINI!</div>
       </a>
   </div> 

@@ -90,7 +90,8 @@ if(!isset($_SESSION['nama_petugas'])){
             <span class="text-uppercase fw-bold">Arsip Data</span>
           </div>
           <div>
-            <a href="data_pengaduan_petugas.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-list-task me-1"></i> Lihat ..</a>
+            <a href="arsip_pengaduan.php" class="btn btn-outline-success btn-sm me-2"><i class="bi bi-archive-fill me-1"></i> Lihat Arsip</a>
+            <a href="laporan_masarakat.php" class="btn btn-dark btn-sm"><i class="bi bi-printer me-1"></i> Cetak Laporan</a>
           </div>
         </div>
 
