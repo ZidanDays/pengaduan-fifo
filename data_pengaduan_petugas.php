@@ -41,18 +41,28 @@ if(!isset($_SESSION['nama_petugas'])){
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
       <a href="admin_petugas.php" class="logo d-flex align-items-center me-auto me-xl-0">
-        <h1 class="sitename">DESA</h1>
+        <h1 class="sitename">DLH Minahasa</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
           <?php if ($_SESSION['level'] == 'petugas') { ?>
             <li><a href="admin_petugas.php">Home</a></li>
-            <li><a href="data_pengaduan_petugas.php" class="active">Pengaduan</a></li>
+            <li class="dropdown"><a href="#" class="active"><span>Pengaduan</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="data_pengaduan_petugas.php" class="active">Antrean Aktif</a></li>
+                <li><a href="arsip_pengaduan.php">Arsip Selesai</a></li>
+              </ul>
+            </li>
             <li><a href="data_masarakat_ptgs.php">Data Masyarakat</a></li>
           <?php } else { ?>
             <li><a href="admin_petugas.php">Home</a></li>
-            <li><a href="data_pengaduan.php" class="active">Pengaduan</a></li>
+            <li class="dropdown"><a href="#" class="active"><span>Pengaduan</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="data_pengaduan.php" class="active">Antrean Aktif</a></li>
+                <li><a href="arsip_pengaduan_adm.php">Arsip Selesai</a></li>
+              </ul>
+            </li>
             <li><a href="data_masarakat.php">Data Masyarakat</a></li>
             <li class="dropdown"><a href="#"><span>Kelola User</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
@@ -72,34 +82,29 @@ if(!isset($_SESSION['nama_petugas'])){
       </div>
 
     </div>
-  </header><main class="main">
+  </header>
 
-    <section class="section">
+  <main class="main">
+
+    <section class="section pb-0">
       <div class="container text-center" data-aos="fade-up">
-        <h2>Data Pengaduan</h2>
-        <p>Halaman kelola pengaduan masyarakat oleh petugas.</p>
+        <h2>Antrean Pengaduan Aktif</h2>
+        <p>Halaman kelola pengaduan masyarakat oleh Petugas. Selesaikan tugas berdasarkan urutan antrean prioritas.</p>
       </div>
     </section>
 
-    <section class="section pt-0">
+    <section class="section pt-4">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="alert alert-light border shadow-sm mb-4 d-flex justify-content-between align-items-center" role="alert">
-          <div>
-            <i class="bi bi-archive-fill fs-4 me-2 align-middle text-success"></i> 
-            <span class="text-uppercase fw-bold">Arsip Data</span>
-          </div>
-          <div>
-            <a href="arsip_pengaduan.php" class="btn btn-outline-success btn-sm me-2"><i class="bi bi-archive-fill me-1"></i> Lihat Arsip</a>
-            <a href="laporan_masarakat.php" class="btn btn-dark btn-sm"><i class="bi bi-printer me-1"></i> Cetak Laporan</a>
-          </div>
-        </div>
-
-        <div class="alert alert-light border shadow-sm mb-4 d-flex justify-content-between align-items-center" role="alert">
+        <div class="alert alert-light border shadow-sm mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" role="alert">
           <div>
             <i class="bi bi-person-circle fs-4 me-2 align-middle text-primary"></i> 
             <span class="text-uppercase fw-bold"><?php echo $_SESSION['nama_petugas']; ?></span>
             <span class="badge bg-primary ms-2 text-uppercase"><?php echo $_SESSION['level']; ?></span>
+          </div>
+          <div>
+            <a href="arsip_pengaduan.php" class="btn btn-outline-success btn-sm me-2"><i class="bi bi-archive-fill me-1"></i> Lihat Arsip</a>
+            <a href="laporan_masarakat.php" class="btn btn-dark btn-sm"><i class="bi bi-printer me-1"></i> Cetak Laporan</a>
           </div>
         </div>
 
@@ -113,20 +118,20 @@ if(!isset($_SESSION['nama_petugas'])){
         </div>
 
         <div class="table-responsive shadow-sm bg-white rounded">
-          <table class="table table-bordered table-hover align-middle mb-0">
-<thead class="table-light">
+          <table class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
+            <thead class="table-light">
               <tr>
-                <th width="5%">No</th>
+                <th width="3%">No</th>
                 <th width="10%">Tanggal</th>
                 <th width="15%">Pelapor</th>
-                <th width="25%">Isi & Prioritas</th>
+                <th width="35%">Detail Laporan & Lokasi</th>
                 <th width="10%">Foto</th>
                 <th width="5%">Status</th>
                 <th width="10%" class="text-center">Aksi</th>
-                <th width="10%" class="text-center">Validasi</th>
+                <th width="12%" class="text-center">Validasi</th>
               </tr>
             </thead>
-<tbody>
+            <tbody>
               <?php
               $batas = 10;
               $halaman = @$_GET['halaman'];
@@ -141,26 +146,16 @@ if(!isset($_SESSION['nama_petugas'])){
               $cari = isset($_POST['cr']) ? $_POST['cr'] : '';
 
               if ($cari != ''){
-                  // Jika ada pencarian, tampilkan semua tanpa filter 'Proses' (Mencari arsip)
                   $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE nama_pengadu LIKE '%".$cari."%' OR nik LIKE '%".$cari."%' OR tgl_pengaduan LIKE '%".$cari."%' OR status LIKE '%".$cari."%' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC"); 
               } else {
-                  // FILTER ACTIVE QUEUE & HYBRID FIFO
-                  // Tampilkan HANYA status 'Proses', diurutkan berdasarkan Prioritas, baru FIFO (ID)
+                  // Menampilkan antrean berstatus 'Proses' diurutkan berdasarkan Skala Prioritas, lalu urutan masuk (ID)
                   $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE status = 'Proses' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC LIMIT $posisi, $batas");
               }
 
               if (mysqli_num_rows($query) > 0){
                   while ($data = mysqli_fetch_array($query)){
                       
-                      // // LOGIKA SLA (Service Level Agreement) - Warna Merah Jika Terlambat 2 Hari
-                      // $tgl_masuk = strtotime($data['tgl_pengaduan']);
-                      // $sekarang = time();
-                      // $selisih_hari = floor(($sekarang - $tgl_masuk) / (60 * 60 * 24));
-                      
-                      // $peringatan_class = ($selisih_hari >= 2 && $data['status'] == 'Proses') ? 'table-danger' : '';
-
-                      // LOGIKA SLA (MEMPERBAIKI ERROR 1970)
-                      // Karena varchar berisi tanda kurung "2023-12-01 (14:30:00)", kita hapus tanda kurungnya agar bisa dibaca fungsi strtotime
+                      // LOGIKA SLA (Perhitungan Keterlambatan Response)
                       $tgl_string_bersih = str_replace(['(', ')'], '', $data['tgl_pengaduan']);
                       $tgl_masuk = strtotime($tgl_string_bersih); 
                       
@@ -177,22 +172,44 @@ if(!isset($_SESSION['nama_petugas'])){
                 </td>
                 <td>
                     <strong><?php echo $data['nama_pengadu']; ?></strong><br>
-                    <small class="text-muted">NIK: <?php echo $data['nik']; ?></small>
+                    <small class="text-muted">NIK: <?php echo $data['nik']; ?></small><br>
+                    <small class="text-primary"><i class="bi bi-telephone"></i> <?php echo $data['tlp']; ?></small>
                 </td>
                 <td>
                     <?php 
-                        if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Prioritas Tinggi</span><br>";
-                        elseif($data['prioritas'] == 'Sedang') echo "<span class='badge bg-warning text-dark mb-1'>Prioritas Sedang</span><br>";
-                        else echo "<span class='badge bg-secondary mb-1'>Prioritas Rendah</span><br>";
+                        if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Prioritas Tinggi</span>";
+                        elseif($data['prioritas'] == 'Sedang') echo "<span class='badge bg-warning text-dark mb-1'>Prioritas Sedang</span>";
+                        else echo "<span class='badge bg-secondary mb-1'>Prioritas Rendah</span>";
                     ?>
-                    <?php echo $data['isi_laporan']; ?>
+                    
+                    <?php if(!empty($data['bidang'])): ?>
+                      <span class='badge bg-info text-dark mb-1 ms-1'><i class="bi bi-diagram-3"></i> <?= $data['bidang']; ?></span>
+                    <?php endif; ?>
+                    <br>
+                    
+                    <div class="mt-2 mb-2 text-dark">
+                      <?php echo $data['isi_laporan']; ?>
+                    </div>
+
+                    <?php if(!empty($data['lokasi'])): 
+                      // Hilangkan spasi pada titik koordinat agar terbaca bersih di URL Google Maps
+                      $koordinat_gps = str_replace(' ', '', $data['lokasi']);
+                    ?>
+                      <div class="mt-2 p-2 bg-light rounded border border-secondary border-opacity-25" style="font-size: 0.85rem;">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> <strong>Lokasi Kejadian:</strong><br>
+                        <a href="https://www.google.com/maps?q=<?= $koordinat_gps ?>" target="_blank" class="btn btn-sm btn-outline-danger mt-1">
+                          <i class="bi bi-map"></i> Buka Rute Peta
+                        </a>
+                        <span class="ms-2 text-muted"><?= $data['lokasi'] ?></span>
+                      </div>
+                    <?php endif; ?>
                 </td>
-                <td>
+                <td class="text-center">
                   <a href="Login/image/<?php echo $data['foto']; ?>" target="_blank" class="glightbox">
-                    <img src="Login/image/<?php echo $data['foto']; ?>" height="55" class="rounded border" alt="Foto">
+                    <img src="Login/image/<?php echo $data['foto']; ?>" height="65" class="rounded border shadow-sm" alt="Foto Bukti">
                   </a>
                 </td>
-                <td>
+                <td class="text-center">
                     <span class="badge <?= ($data['status'] == 'Selesai') ? 'bg-success' : 'bg-warning text-dark' ?>"><?php echo $data['status']; ?></span>
                 </td>
                 <td class="text-center">
@@ -200,6 +217,7 @@ if(!isset($_SESSION['nama_petugas'])){
                     <input type="hidden" name="id" value="<?php echo $data['id_pengaduan']; ?>">
                     <input type="hidden" name="status" value="Selesai">
                     <button type="submit" class="btn btn-sm btn-success mb-1 w-100" name="simpan"><i class="bi bi-check-circle"></i> Selesai</button>
+                    
                     <a onClick="return confirm('Yakin Ingin Menghapus?')" class="btn btn-sm btn-danger w-100" href="hapus_data_ptgs.php?idd=<?php echo $data['id_pengaduan']; ?>"><i class="bi bi-trash"></i> Hapus</a>
                   </form>
                 </td>
@@ -230,7 +248,8 @@ if(!isset($_SESSION['nama_petugas'])){
         </div>
 
         <?php
-          $query2     = mysqli_query($conn, "SELECT * FROM pengaduan");
+          $q_page = ($cari != '') ? "SELECT * FROM pengaduan" : "SELECT * FROM pengaduan WHERE status = 'Proses'";
+          $query2     = mysqli_query($conn, $q_page);
           $jmldata    = mysqli_num_rows($query2);
           $jmlhalaman = ceil($jmldata/$batas);
         ?>
@@ -254,10 +273,7 @@ if(!isset($_SESSION['nama_petugas'])){
   <footer id="footer" class="footer light-background mt-auto">
     <div class="container">
       <div class="copyright text-center ">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">DESA</strong> <span>All Rights Reserved</span></p>
-      </div>
-      <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">DLH Minahasa</strong> <span>All Rights Reserved</span></p>
       </div>
     </div>
   </footer>
@@ -279,5 +295,4 @@ if(!isset($_SESSION['nama_petugas'])){
   <script src="assets/js/main.js"></script>
 
 </body>
-
 </html>

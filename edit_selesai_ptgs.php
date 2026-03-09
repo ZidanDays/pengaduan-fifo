@@ -14,7 +14,8 @@ if (isset($_POST['simpan'])){
 	// $tlp = $_POST ['tlp'];
 	// $foto = $_POST ['foto'];
 	$st = $_POST ['status'];
-	$edit = mysqli_query ($conn, "UPDATE pengaduan SET id_pengaduan='$id',tgl_pengaduan='$tgl',nama_pengadu='$nama',nik='$nik',isi_laporan='$isi',tlp='$tlp',foto='$foto',status='$st' WHERE id_pengaduan ='$idd'");
+	// $edit = mysqli_query ($conn, "UPDATE pengaduan SET id_pengaduan='$id',tgl_pengaduan='$tgl',nama_pengadu='$nama',nik='$nik',isi_laporan='$isi',tlp='$tlp',foto='$foto',status='$st' WHERE id_pengaduan ='$idd'");
+	$edit = mysqli_query ($conn, "UPDATE pengaduan SET id_pengaduan='$id',status='$st' WHERE id_pengaduan ='$idd'");
 	if($edit){
 		?>
         <script type="text/javascript">

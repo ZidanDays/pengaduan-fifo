@@ -41,7 +41,7 @@ if(!isset($_SESSION['nama_petugas'])){
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
       <a href="admin_petugas.php" class="logo d-flex align-items-center me-auto me-xl-0">
-        <h1 class="sitename">DESA</h1>
+        <h1 class="sitename">DLH Minahasa</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
@@ -96,7 +96,7 @@ if(!isset($_SESSION['nama_petugas'])){
     <section class="section pt-4">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="alert alert-light border shadow-sm mb-4 d-flex justify-content-between align-items-center" role="alert">
+        <div class="alert alert-light border shadow-sm mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" role="alert">
           <div>
             <i class="bi bi-person-circle fs-4 me-2 align-middle text-primary"></i> 
             <span class="text-uppercase fw-bold"><?php echo $_SESSION['nama_petugas']; ?></span>
@@ -118,17 +118,17 @@ if(!isset($_SESSION['nama_petugas'])){
         </div>
 
         <div class="table-responsive shadow-sm bg-white rounded">
-          <table class="table table-bordered table-hover align-middle mb-0">
+          <table class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
             <thead class="table-light">
               <tr>
-                <th width="5%">No</th>
+                <th width="3%">No</th>
                 <th width="10%">Tanggal</th>
                 <th width="15%">Pelapor</th>
-                <th width="25%">Isi & Prioritas</th>
+                <th width="35%">Detail Kejadian & Lokasi</th>
                 <th width="10%">Foto</th>
                 <th width="5%">Status</th>
                 <th width="10%" class="text-center">Aksi</th>
-                <th width="10%" class="text-center">Validasi</th>
+                <th width="12%" class="text-center">Validasi</th>
               </tr>
             </thead>
             <tbody>
@@ -148,14 +148,13 @@ if(!isset($_SESSION['nama_petugas'])){
               if ($cari != ''){
                   $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE nama_pengadu LIKE '%".$cari."%' OR nik LIKE '%".$cari."%' OR tgl_pengaduan LIKE '%".$cari."%' OR status LIKE '%".$cari."%' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC"); 
               } else {
-                  // Tampilkan HANYA status 'Proses' di antrean utama
                   $query = mysqli_query($conn, "SELECT * FROM pengaduan WHERE status = 'Proses' ORDER BY FIELD(prioritas, 'Tinggi', 'Sedang', 'Rendah'), id_pengaduan ASC LIMIT $posisi, $batas");
               }
 
               if (mysqli_num_rows($query) > 0){
                   while ($data = mysqli_fetch_array($query)){
                       
-                      // LOGIKA SLA (MEMPERBAIKI ERROR 1970)
+                      // LOGIKA SLA 
                       $tgl_string_bersih = str_replace(['(', ')'], '', $data['tgl_pengaduan']);
                       $tgl_masuk = strtotime($tgl_string_bersih); 
                       
@@ -172,22 +171,44 @@ if(!isset($_SESSION['nama_petugas'])){
                 </td>
                 <td>
                     <strong><?php echo $data['nama_pengadu']; ?></strong><br>
-                    <small class="text-muted">NIK: <?php echo $data['nik']; ?></small>
+                    <small class="text-muted">NIK: <?php echo $data['nik']; ?></small><br>
+                    <small class="text-primary"><i class="bi bi-telephone"></i> <?php echo $data['tlp']; ?></small>
                 </td>
                 <td>
                     <?php 
-                        if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Prioritas Tinggi</span><br>";
-                        elseif($data['prioritas'] == 'Sedang') echo "<span class='badge bg-warning text-dark mb-1'>Prioritas Sedang</span><br>";
-                        else echo "<span class='badge bg-secondary mb-1'>Prioritas Rendah</span><br>";
+                        if($data['prioritas'] == 'Tinggi') echo "<span class='badge bg-danger mb-1'>Prioritas Tinggi</span>";
+                        elseif($data['prioritas'] == 'Sedang') echo "<span class='badge bg-warning text-dark mb-1'>Prioritas Sedang</span>";
+                        else echo "<span class='badge bg-secondary mb-1'>Prioritas Rendah</span>";
                     ?>
-                    <?php echo $data['isi_laporan']; ?>
+                    
+                    <?php if(!empty($data['bidang'])): ?>
+                      <span class='badge bg-info text-dark mb-1 ms-1'><i class="bi bi-diagram-3"></i> <?= $data['bidang']; ?></span>
+                    <?php endif; ?>
+                    <br>
+                    
+                    <div class="mt-2 mb-2">
+                      <?php echo $data['isi_laporan']; ?>
+                    </div>
+
+                    <?php if(!empty($data['lokasi'])): 
+                      // Bersihkan string lokasi dari spasi agar URL valid
+                      $koordinat_gps = str_replace(' ', '', $data['lokasi']);
+                    ?>
+                      <div class="mt-2 p-2 bg-light rounded border border-secondary border-opacity-25" style="font-size: 0.85rem;">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> <strong>Lokasi Kejadian:</strong><br>
+                        <a href="https://www.google.com/maps?q=<?= $koordinat_gps ?>" target="_blank" class="btn btn-sm btn-outline-danger mt-1">
+                          <i class="bi bi-map"></i> Buka di Google Maps
+                        </a>
+                        <span class="ms-2 text-muted"><?= $data['lokasi'] ?></span>
+                      </div>
+                    <?php endif; ?>
                 </td>
-                <td>
+                <td class="text-center">
                   <a href="Login/image/<?php echo $data['foto']; ?>" target="_blank" class="glightbox">
-                    <img src="Login/image/<?php echo $data['foto']; ?>" height="55" class="rounded border" alt="Foto">
+                    <img src="Login/image/<?php echo $data['foto']; ?>" height="65" class="rounded border shadow-sm" alt="Foto Bukti">
                   </a>
                 </td>
-                <td>
+                <td class="text-center">
                     <span class="badge <?= ($data['status'] == 'Selesai') ? 'bg-success' : 'bg-warning text-dark' ?>"><?php echo $data['status']; ?></span>
                 </td>
                 <td class="text-center">
@@ -250,10 +271,7 @@ if(!isset($_SESSION['nama_petugas'])){
   <footer id="footer" class="footer light-background mt-auto">
     <div class="container">
       <div class="copyright text-center ">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">DESA</strong> <span>All Rights Reserved</span></p>
-      </div>
-      <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">DLH Minahasa</strong> <span>All Rights Reserved</span></p>
       </div>
     </div>
   </footer>
